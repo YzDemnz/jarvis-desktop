@@ -130,6 +130,11 @@
     "sha256": "51d9078df70a4b2ddd14079d1b894072ee62b2c909ac4fc1e25d3b122433556f"
   },
   {
+    "path": "electron/connected/ChatCompletionsProvider.ts",
+    "size": 9116,
+    "sha256": "a911f5ac6936a801ecf9e4f477495f770b482f2c1b27234d961e599e9c7ef4d1"
+  },
+  {
     "path": "electron/connected/ConciliusCoordinator.ts",
     "size": 17713,
     "sha256": "49267c1e24106949f7693e607b222211f652cb7d44deb96e0fcbde3b88a92b9c"
@@ -143,6 +148,11 @@
     "path": "electron/connected/ConnectedPolicy.ts",
     "size": 2435,
     "sha256": "df30424df3b4f3e9db3b101a659188d25b86500045f952299be1a12d77665e49"
+  },
+  {
+    "path": "electron/connected/CredentialStore.ts",
+    "size": 3981,
+    "sha256": "06ebc6be65fcb7e6742809aee74833339221ceb90936c71510061414712187fe"
   },
   {
     "path": "electron/connected/DependencyContext.ts",
@@ -3328,6 +3338,11 @@
     "path": "tsconfig.json",
     "size": 636,
     "sha256": "6f4f94b32991149b6d8b155522a7557531363984886d9a178defc3f5facec29e"
+  },
+  {
+    "path": "VERIFICACION.md",
+    "size": 1213,
+    "sha256": "858088220d836db41a3d61e5e6fd8317ad50e115babc72149f459bfbaa5c633d"
   },
   {
     "path": "vite.config.ts",
