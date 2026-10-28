@@ -476,8 +476,8 @@
   },
   {
     "path": "README.md",
-    "size": 3985,
-    "sha256": "618ab4afe17dc7d4b4b49bf9c362aeb79afbe0a43fc801a15aca2fd398a0c749"
+    "size": 3986,
+    "sha256": "d659fde689efe1462af42fb62f03f7ef141a86fca704bde328e77c8ccab2ac33"
   },
   {
     "path": "src/agent/adapters/bridge.ts",

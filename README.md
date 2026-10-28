@@ -1,6 +1,6 @@
 # JARVIS Desktop
 
-Estación de trabajo personal para Windows con interfaz Electron/React, lógica TypeScript, almacenamiento SQLite y helpers nativos en C#. Proyecto personal de Jesús Leonardo Martínez Rodrigues.
+Estación de trabajo personal para Windows con interfaz Electron/React, lógica TypeScript, almacenamiento SQLite y helpers nativos en C#. Proyecto personal de Jesús Leonardo Martínez Rodríguez.
 
 ## Qué demuestra
 
