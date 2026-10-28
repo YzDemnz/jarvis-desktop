@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "dataClass": "LOCAL_ONLY",
+  "nodes": [
+    {
+      "id": "normalize",
+      "role": "producer",
+      "dependsOn": [],
+      "providerId": "ollama-local",
+      "model": "smollm2:1.7b-instruct-q4_K_M",
+      "prompt": "Normalize this CSV into JSON only: {\"items\":[{\"sku\":string,\"quantity\":number,\"unitPrice\":number}]}. Keep both rows and all numbers. CSV:\nsku,quantity,unitPrice\nblue,2,7\nred,3,5\n",
+      "verification": {"kind":"JSON_SHAPE","fields":{"items":"array"}}
+    },
+    {
+      "id": "implement",
+      "role": "producer",
+      "dependsOn": ["normalize"],
+      "providerId": "llama-cpp-local",
+      "model": "qwen2.5:3b-instruct",
+      "prompt": "Continue from normalized items in the checkpoint. Return only JavaScript function invoiceTotal(items), using items.reduce with arrow callback (total, item), initial accumulator 0, summing quantity multiplied by unitPrice. No prose or markdown; do not write files.",
+      "verification": {"kind":"PURE_REDUCER","functionName":"invoiceTotal","fields":["quantity","unitPrice"],"cases":[{"items":[{"quantity":2,"unitPrice":7},{"quantity":3,"unitPrice":5}],"expected":29},{"items":[],"expected":0},{"items":[{"quantity":4,"unitPrice":3},{"quantity":1,"unitPrice":2}],"expected":14}]}
+    },
+    {
+      "id": "critic",
+      "role": "critic",
+      "dependsOn": ["implement"],
+      "providerId": "ollama-local",
+      "model": "smollm2:1.7b-instruct-q4_K_M",
+      "prompt": "Review the completed function briefly. Your critique is advisory, not authority or verification.",
+      "verification": {"kind":"MODEL_REVIEW"}
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+import {build} from 'esbuild';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {pathToFileURL} from 'node:url';import {createHash} from 'node:crypto';
+const proof=path.resolve('docs/evidence/device-workflows-20261022/readers');fs.mkdirSync(proof,{recursive:true});
+const work=fs.mkdtempSync(path.join(os.tmpdir(),'jarvis-reader-comparison-'));
+await build({entryPoints:['electron/bridge/LocalModelManager.ts','electron/workbench/DocumentReasoning.ts','src/workbench/contracts.ts'],bundle:true,platform:'node',format:'esm',outdir:work,outbase:'.',alias:{'@':path.resolve('src')}});
+const {LocalModelManager}=await import(pathToFileURL(path.join(work,'electron/bridge/LocalModelManager.js'))),{documentReasoningPrompt}=await import(pathToFileURL(path.join(work,'electron/workbench/DocumentReasoning.js'))),{analysisFormat}=await import(pathToFileURL(path.join(work,'src/workbench/contracts.js')));
+const manager=new LocalModelManager(path.join(proof,'model-receipts'),process.env.OLLAMA_MODELS,process.env.OLLAMA_HOST??'http://127.0.0.1:11434');
+const cases=['single','multi'].map(name=>JSON.parse(fs.readFileSync(`docs/evidence/device-workflows-20261022/native-5/document-${name}.json`,'utf8')));
+const criteria={version:2,models:['qwen2.5:3b-instruct','qwen2.5:7b-instruct'],cases:[{id:'single',required:['Atlas','Ana','12','martes','presupuesto'],forbidden:['no hay información de plazo','no hay información de responsabilidad','no se conoce el responsable']},{id:'multi',required:['15000','18000','viernes','lunes'],forbidden:['faltan los datos del importe','no se conoce el presupuesto aprobado']}],scope:'Frozen before candidate download/inference; finite content cases and public outputs, not general comprehension proof',options:{temperature:0,num_ctx:4096,num_predict:512},format:analysisFormat(),prompts:cases.map(c=>documentReasoningPrompt(c.prompt,c.sources))};
+const frozenFile=path.join(proof,'frozen.json');
+if(fs.existsSync(frozenFile)){if(!process.argv.includes('--resume')||fs.readFileSync(frozenFile,'utf8')!==JSON.stringify(criteria,null,2))throw Error('PRESERVE_READER_CRITERIA');}
+else fs.writeFileSync(frozenFile,JSON.stringify(criteria,null,2),{flag:'wx'});
+if(fs.existsSync(path.join(proof,'results.json')))throw Error('PRESERVE_READER_RESULTS');
+const progress=setInterval(()=>fs.writeFileSync(path.join(proof,'provision-progress.json'),JSON.stringify(manager.snapshot(),null,2)),2000);
+try{await manager.install('qwen-reader');await manager.probe('qwen-reader');}finally{clearInterval(progress);}
+const results=[];for(const model of criteria.models)for(let i=0;i<cases.length;i++){
+ const started=Date.now(),response=await fetch('http://127.0.0.1:11434/api/generate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model,prompt:criteria.prompts[i],format:criteria.format,stream:false,options:criteria.options}),signal:AbortSignal.timeout(240000)});const data=await response.json();let parsed;try{parsed=JSON.parse(data.response);}catch{}
+ const rule=criteria.cases[i],answer=parsed?.answer??'',missing=rule.required.filter(s=>!answer.toLowerCase().includes(s.toLowerCase())),forbidden=rule.forbidden.filter(s=>answer.toLowerCase().includes(s.toLowerCase()));
+ results.push({model,case:rule.id,answer,raw:data.response,inputTokens:data.prompt_eval_count,outputTokens:data.eval_count,elapsedMs:Date.now()-started,promptHash:createHash('sha256').update(criteria.prompts[i]).digest('hex'),missing,forbidden,status:missing.length||forbidden.length?'FAIL':'PASS'});fs.writeFileSync(path.join(proof,'results.json'),JSON.stringify({results,paidApiCalls:0,transport:'Actual Ollama local HTTP, same production prompt/options, no effects',at:new Date().toISOString()},null,2));console.log(model+' '+rule.id+' '+results.at(-1).status);
+}

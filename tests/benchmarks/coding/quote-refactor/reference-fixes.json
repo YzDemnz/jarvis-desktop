@@ -1,0 +1,1 @@
+{"src/estimate.cjs":[{"oldText":"return subtotalMinor + shipping;","newText":"return { subtotalMinor, shippingMinor: shipping.costMinor, totalMinor: subtotalMinor + shipping.costMinor };"}],"src/checkout.cjs":[{"oldText":"const amountMinor = estimate(order);","newText":"const amountMinor = estimate(order).totalMinor;"}]}

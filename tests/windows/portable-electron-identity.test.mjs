@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {verifyPortableElectron} from '../../tools/check-portable-electron.mjs';
+const fixture=fs.mkdtempSync(path.join(os.tmpdir(),'jarvis-electron-identity-negative-'));
+assert.ok(fixture.toLowerCase().startsWith('e:\\codex\\'));
+fs.writeFileSync(path.join(fixture,'JARVIS.exe'),'owned changed artifact, never execute');
+await assert.rejects(()=>verifyPortableElectron(fixture),/PACKAGED_ELECTRON_BINARY_CHANGED/);
+assert.equal(fs.existsSync(path.join(fixture,'portable-electron-proof.json')),false);
+console.log('PORTABLE_ELECTRON_NEGATIVE_PASS changed executable refused before identity proof');

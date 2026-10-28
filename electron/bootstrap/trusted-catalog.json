@@ -1,0 +1,260 @@
+{
+  "version": 1,
+  "researchDate": "2026-10-07",
+  "runtime": {
+    "id": "llama-cpp-b6500-cpu-x64",
+    "release": "b6500",
+    "os": "win32",
+    "arch": "x64",
+    "acceleration": "cpu",
+    "license": "MIT",
+    "artifact": {
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b6500/llama-b6500-bin-win-cpu-x64.zip",
+      "size": 13992302,
+      "sha256": "73e00267e852e666a6fce2c3fb7a2603dd1934a37259f3f45c2c1b6983fa605a",
+      "filename": "llama-b6500-bin-win-cpu-x64.zip"
+    },
+    "assets": [
+      {
+        "file": "ggml-base.dll",
+        "sha256": "0264afa371c8098add67f4227a804b3d2e026b11496d0c259dc2509113afb427"
+      },
+      {
+        "file": "ggml-cpu-alderlake.dll",
+        "sha256": "e23e8b688051ec5b8bc95779801f2537f12c3f43b3ca2b3fa8b066f7a1e9e5ff"
+      },
+      {
+        "file": "ggml-cpu-haswell.dll",
+        "sha256": "67785d8c3028e24b97696900de5ec47a7ecaed9969fbc2596b05a407bab1bb02"
+      },
+      {
+        "file": "ggml-cpu-icelake.dll",
+        "sha256": "0c829f886f12ab1623d71bdd7213fa4ef07f65ec2f191de81a4b0f0a580ef711"
+      },
+      {
+        "file": "ggml-cpu-sandybridge.dll",
+        "sha256": "d19f88678585b5d85aed68f62ecd5f879ef936aef89e755397d750a7cbb553d9"
+      },
+      {
+        "file": "ggml-cpu-sapphirerapids.dll",
+        "sha256": "8019e8576cb2dc66eaaebfafaa2ee3ecca11bad0fe4f1a8d801121418f478c32"
+      },
+      {
+        "file": "ggml-cpu-skylakex.dll",
+        "sha256": "e697936d0ece658ca67165d04a229bde21f1bfffbf6f5904ffcc6c71cd434036"
+      },
+      {
+        "file": "ggml-cpu-sse42.dll",
+        "sha256": "984d0713046fe5bb88d6dcc49f9ccb620695f50f76f1f02fecf5ef09d6ea92ad"
+      },
+      {
+        "file": "ggml-cpu-x64.dll",
+        "sha256": "d1cf3e3c0a111e8ff151bdf3856c0d206f6545fe02ad9cd0ef694062c5524afd"
+      },
+      {
+        "file": "ggml-rpc.dll",
+        "sha256": "778973539d7b92bfdff34489bb9b0e2e920a4686c235a0ccaa5e6d0622e1d634"
+      },
+      {
+        "file": "ggml.dll",
+        "sha256": "a20e4824a96e2ecb9c8689c4b454dba26ac195f0a47981399b453dc3eba43775"
+      },
+      {
+        "file": "libcurl-x64.dll",
+        "sha256": "5bd5fda8cf2bef630dd4eed5e60b65af2aed9c76c1818c36133701c09cf6d0ac"
+      },
+      {
+        "file": "libomp140.x86_64.dll",
+        "sha256": "9ab1cb787e52b2a36133899c01c1db1f876067d1471cd224ead85f40a8152b99"
+      },
+      {
+        "file": "LICENSE-curl",
+        "sha256": "55f407e7e7100c3188c8988374f472e0a7c0ecaf7ee3ff4796ea391274cc346d"
+      },
+      {
+        "file": "LICENSE-httplib",
+        "sha256": "d5eab7ee2adb2247b367450741f932c6820a883a45ea682a4e2588a8d28b88e9"
+      },
+      {
+        "file": "LICENSE-jsonhpp",
+        "sha256": "61e08da79c44061654015ce6b0c4061c23ee1dd18237fbf09e9bfda3c0ea2831"
+      },
+      {
+        "file": "LICENSE-linenoise",
+        "sha256": "6d7830bc0b53fa551168ef13b12e27073f451edd751d4b4b2ff03442cfe77378"
+      },
+      {
+        "file": "llama-batched-bench.exe",
+        "sha256": "1a16309fcaca7a5a030f92fd340725354c3fa6c29dae0933b74240c5d63b5ef8"
+      },
+      {
+        "file": "llama-bench.exe",
+        "sha256": "1f5f9babf247efe7286913423773fbe2765dfabc93ecb4d8c13929248e70ddf8"
+      },
+      {
+        "file": "llama-cli.exe",
+        "sha256": "e5979f79b765e842a622d98279dbf7c82b0d50d55ec5c96f2eca08134c1ff679"
+      },
+      {
+        "file": "llama-gemma3-cli.exe",
+        "sha256": "d555a86872b016edf5ff4966e9566a486e0d3a39cca6647ab788bc4916aaa4df"
+      },
+      {
+        "file": "llama-gguf-split.exe",
+        "sha256": "90c18bc7db6dfc3577727963a5c53a9053135a51ebaa7111f17368f45dabd58d"
+      },
+      {
+        "file": "llama-imatrix.exe",
+        "sha256": "9e4a30f9446c87abff2a87d463aa9c9734df7bc512f731324797b54247ba4434"
+      },
+      {
+        "file": "llama-llava-cli.exe",
+        "sha256": "d555a86872b016edf5ff4966e9566a486e0d3a39cca6647ab788bc4916aaa4df"
+      },
+      {
+        "file": "llama-minicpmv-cli.exe",
+        "sha256": "d555a86872b016edf5ff4966e9566a486e0d3a39cca6647ab788bc4916aaa4df"
+      },
+      {
+        "file": "llama-mtmd-cli.exe",
+        "sha256": "0414faaaee78d0af372fdcac279457aaf6131531a6ca9b6360a1761dac5442bd"
+      },
+      {
+        "file": "llama-perplexity.exe",
+        "sha256": "5b8c1a9719e15fecdd8b22764cfc2e03f9a58bb5416f6cdf6a1937f75079152e"
+      },
+      {
+        "file": "llama-quantize.exe",
+        "sha256": "0e1fe7a9890c54d2309055563f6a124eadff78b62f2d5fd1ecc15c1989657c1a"
+      },
+      {
+        "file": "llama-qwen2vl-cli.exe",
+        "sha256": "d555a86872b016edf5ff4966e9566a486e0d3a39cca6647ab788bc4916aaa4df"
+      },
+      {
+        "file": "llama-run.exe",
+        "sha256": "b77bb92b68c07078bd65027c8e15777f0fe8b79fccc82e88f5b5075fbe97ee8a"
+      },
+      {
+        "file": "llama-server.exe",
+        "sha256": "62e6a5fec588ff3ea6d26a507db4373e56c850db19b39239bd30f5e7d87751cd"
+      },
+      {
+        "file": "llama-tokenize.exe",
+        "sha256": "9274006c9cc3484b1d5c0a23e29a1272c9fb9fa0543077eaf73c344a3ffb8f06"
+      },
+      {
+        "file": "llama-tts.exe",
+        "sha256": "4d57b8fbdbc9ebe2985bb7eb25503643c86bda0ff22044bea5511cdf0925b6bf"
+      },
+      {
+        "file": "llama.dll",
+        "sha256": "0357a6eb8397617ab5d0a6a4a0d7c211f11617669d8173f161f53d09438f2cee"
+      },
+      {
+        "file": "mtmd.dll",
+        "sha256": "e70e444966d9c0e37a4da7d5c6210283ddb0b57dd66be87b3f7b5ad59f7fd370"
+      },
+      {
+        "file": "rpc-server.exe",
+        "sha256": "e6635697f392e4f94fd0a2833bc306702f0d9aacc62e71331921585eb94fd563"
+      }
+    ]
+  },
+  "models": [
+    {
+      "id": "qwen3-0.6b-gguf",
+      "label": "Qwen3-0.6B-Q8_0",
+      "artifact": {
+        "url": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/resolve/23749fefcc72300e3a2ad315e1317431b06b590a/Qwen3-0.6B-Q8_0.gguf",
+        "size": 639446688,
+        "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+        "filename": "Qwen3-0.6B-Q8_0.gguf"
+      },
+      "ramBytes": 1610612736,
+      "priority": 1,
+      "context": 2048,
+      "capabilities": [
+        "general",
+        "reasoning",
+        "coding-text"
+      ],
+      "source": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF",
+      "license": "Apache-2.0",
+      "limitations": [
+        "Estimacion de RAM, no benchmark. Texto; vision y herramientas no admitidas.",
+        "CPU verificado; aceleracion GPU UNKNOWN. Contexto inicial limitado a 2048."
+      ]
+    },
+    {
+      "id": "qwen3-4b-gguf",
+      "label": "Qwen3-4B-Q4_K_M",
+      "artifact": {
+        "url": "https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/bc640142c66e1fdd12af0bd68f40445458f3869b/Qwen3-4B-Q4_K_M.gguf",
+        "size": 2497280256,
+        "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+        "filename": "Qwen3-4B-Q4_K_M.gguf"
+      },
+      "ramBytes": 5905580032,
+      "priority": 3,
+      "context": 2048,
+      "capabilities": [
+        "general",
+        "reasoning",
+        "coding-text"
+      ],
+      "source": "https://huggingface.co/Qwen/Qwen3-4B-GGUF",
+      "license": "Apache-2.0",
+      "limitations": [
+        "Estimacion de RAM, no benchmark. Texto; vision y herramientas no admitidas.",
+        "CPU verificado; aceleracion GPU UNKNOWN. Contexto inicial limitado a 2048."
+      ]
+    },
+    {
+      "id": "qwen3-8b-gguf",
+      "label": "Qwen3-8B-Q4_K_M",
+      "artifact": {
+        "url": "https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/7c41481f57cb95916b40956ab2f0b139b296d974/Qwen3-8B-Q4_K_M.gguf",
+        "size": 5027783488,
+        "sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+        "filename": "Qwen3-8B-Q4_K_M.gguf"
+      },
+      "ramBytes": 10737418240,
+      "priority": 4,
+      "context": 2048,
+      "capabilities": [
+        "general",
+        "reasoning",
+        "coding-text"
+      ],
+      "source": "https://huggingface.co/Qwen/Qwen3-8B-GGUF",
+      "license": "Apache-2.0",
+      "limitations": [
+        "Estimacion de RAM, no benchmark. Texto; vision y herramientas no admitidas.",
+        "CPU verificado; aceleracion GPU UNKNOWN. Contexto inicial limitado a 2048."
+      ]
+    },
+    {
+      "id": "qwen2.5-3b-recovery",
+      "label": "Qwen2.5 3B · compatibilidad recuperada",
+      "artifact": {
+        "url": "https://registry.ollama.ai/v2/library/qwen2.5/blobs/sha256:5ee4f07cdb9beadbbb293e85803c569b01bd37ed059d2715faa7bb405f31caa6",
+        "size": 1929903008,
+        "sha256": "5ee4f07cdb9beadbbb293e85803c569b01bd37ed059d2715faa7bb405f31caa6",
+        "filename": "qwen2.5-3b-instruct-q4_k_m.gguf"
+      },
+      "ramBytes": 4294967296,
+      "priority": 2,
+      "context": 2048,
+      "capabilities": [
+        "general",
+        "coding-text"
+      ],
+      "source": "https://ollama.com/library/qwen2.5:3b",
+      "license": "qwen-research",
+      "limitations": [
+        "Compatibilidad heredada; revisar licencia Qwen Research. Preferir Qwen3 para nuevas instalaciones."
+      ]
+    }
+  ]
+}

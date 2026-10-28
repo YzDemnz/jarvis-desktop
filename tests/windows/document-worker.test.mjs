@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {spawnSync} from 'node:child_process';import {zipSync,strToU8} from 'fflate';
+const root='E:\\CODEX\\Aplicaciones\\JARVIS\\Dependencias\\Workstation\\document-contracts',proof=path.resolve('docs/evidence/device-workflows-20261022/document-contracts');fs.mkdirSync(root,{recursive:true});fs.mkdirSync(proof,{recursive:true});
+for(const file of ['document-worker.mjs','pdf.worker.mjs'])fs.copyFileSync(path.join('dist-workbench',file),path.join(root,file));
+let count=0;const checks=[];
+function worker(request){const id=++count,source=path.join(root,id+'-request.json'),result=path.join(root,id+'-result.json');fs.writeFileSync(source,JSON.stringify({...request,result}));const child=spawnSync(process.execPath,[path.join(root,'document-worker.mjs'),source],{encoding:'utf8',windowsHide:true,timeout:45000});const value=fs.existsSync(result)?JSON.parse(fs.readFileSync(result,'utf8')):{ok:false,error:String(child.error)};checks.push({id,request,status:child.status,result:value,stdout:child.stdout,stderr:child.stderr});fs.writeFileSync(path.join(proof,'results.json'),JSON.stringify({checks},null,2));return value;}
+const source=(name,data)=>{const p=path.join(root,name);fs.writeFileSync(p,data);return p;};
+function xmlDoc(name,xml){return source(name,zipSync({'word/document.xml':strToU8(xml)}));}
+const good=xmlDoc('table-and-accents.docx','<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>José revisa 12 cajas &amp; documentos.</w:t></w:r></w:p><w:tbl><w:tr><w:tc><w:p><w:r><w:t>Martes</w:t></w:r></w:p></w:tc></w:tr></w:tbl></w:body></w:document>');
+assert.deepEqual(worker({kind:'read',source:good}).result.lines.map(l=>l.text),['José revisa 12 cajas & documentos.','Martes']);
+assert.match(worker({kind:'read',source:xmlDoc('entity.docx','<!DOCTYPE x [<!ENTITY secret SYSTEM "file:///irrelevant">]><w:document/>')}).error,/DOCX_XML_INVALID/);
+assert.match(worker({kind:'read',source:xmlDoc('expansion.docx','a'.repeat(4*1024*1024+1))}).error,/DOCX_EXPANSION_LIMIT/);
+assert.match(worker({kind:'read',source:source('large.txt',Buffer.alloc(8*1024*1024+1,65))}).error,/SIZE_LIMIT/);
+assert.match(worker({kind:'read',source:source('binary.txt',Buffer.from('plain\0binary'))}).error,/BINARY/);
+assert.equal(worker({kind:'read',source:source('utf16.txt',Buffer.concat([Buffer.from([255,254]),Buffer.from('Lectura española','utf16le')]))}).result.lines[0].text,'Lectura española');
+assert.ok(!JSON.stringify(worker({kind:'read',source:source('boundary.txt','api_key=FAKE_BOUNDARY_ONLY_VALUE')})).includes('FAKE_BOUNDARY_ONLY_VALUE'));
+const pdf=path.resolve('docs/evidence/device-workflows-20261022/fixtures/Lumen-aprobacion.pdf');assert.ok(worker({kind:'read',source:pdf}).result.lines.some(l=>l.text.includes('18000')));
+const word=path.join(root,'word-roundtrip.docx'),content={title:'Prueba de lectura documental',sections:[{heading:'Datos contrastados',paragraphs:['José revisa 12 cajas el martes.','El presupuesto es de 18000 pesos.']}]};assert.equal(worker({kind:'word',output:word,content}).ok,true);assert.ok(worker({kind:'read',source:word}).result.lines.some(l=>l.text.includes('José revisa 12')));
+fs.writeFileSync(path.join(proof,'result.json'),JSON.stringify({status:'PASS',checks:count,scope:'Real bundled worker executed outside repository without repo node_modules; parser limits, structured text, PDF, redaction, and independent Word readback',at:new Date().toISOString()},null,2));console.log('DOCUMENT_WORKER_CHECKS '+count);

@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import Database from 'better-sqlite3';
+const profile = path.resolve(process.argv[2] ?? '');
+if (!profile.toLowerCase().startsWith('e:\\codex\\') || !path.basename(profile).startsWith('jarvis-fabric-native-')) throw Error('ISOLATED_EXTERNAL_PROFILE_REQUIRED');
+const ids = process.argv.slice(3);
+const db = new Database(path.join(profile, 'intelligence-fabric/fabric.sqlite'), {readonly: true});
+const all = db.prepare("SELECT operation_json FROM task_operations WHERE operation_id LIKE 'project-checks:%' OR operation_id LIKE 'proposal:%'").all().map(row => JSON.parse(row.operation_json));
+const records = all.filter(record => ids.includes('--all') || ids.includes(record.taskId)).slice(-200);
+console.log(JSON.stringify({profile, records, selection: 'Only benchmark-owned run receipts/proposal metadata; no messages or credentials read'}, null, 2));
+db.close();

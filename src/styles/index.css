@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #79a9ff;
+  --grid-line: rgba(255, 255, 255, 0.028);
+}
+
+@layer base {
+  * { border-color: theme('colors.hairline'); }
+
+  html, body, #root { height: 100%; }
+
+  body {
+    @apply bg-void text-ink font-sans antialiased;
+    font-size: 13.5px;
+    overflow: hidden;
+    /* A faint engineering grid so empty space still reads as instrument, not void. */
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  ::selection { background: rgba(121, 169, 255, 0.28); }
+
+  :focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  input, textarea, button { font: inherit; color: inherit; }
+  input::placeholder, textarea::placeholder { @apply text-faint; }
+}
+
+@layer components {
+  .surface { @apply bg-panel/80 border border-hairline; }
+  .raised-surface { @apply bg-raised border border-hairline; }
+
+  .drag-region { -webkit-app-region: drag; }
+  .no-drag { -webkit-app-region: no-drag; }
+
+  /* Numbers line up in columns everywhere they appear. */
+  .tnum { @apply font-mono tabular-nums; font-feature-settings: 'tnum' 1, 'zero' 1; }
+
+  .hairline-t { @apply border-t border-hairline; }
+  .hairline-b { @apply border-b border-hairline; }
+  .hairline-r { @apply border-r border-hairline; }
+  .hairline-l { @apply border-l border-hairline; }
+}
+
+@layer utilities {
+  .scroll-thin { scrollbar-width: thin; scrollbar-color: #2b3138 transparent; }
+  .scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll-thin::-webkit-scrollbar-thumb { background: #262c33; border-radius: 4px; }
+  .scroll-thin::-webkit-scrollbar-thumb:hover { background: #333b44; }
+  .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+
+  .glass { backdrop-filter: blur(18px) saturate(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,1 @@
+{"src/line.cjs":[{"oldText":"return Math.round(item.priceMajor * item.quantity);","newText":"return minorUnits(item.priceMajor * item.quantity);"}],"src/invoice.cjs":[{"oldText":"Math.round(subtotalMinor + taxPercent / 100)","newText":"Math.round(subtotalMinor * taxPercent / 100)"}]}

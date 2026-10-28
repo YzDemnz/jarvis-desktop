@@ -1,0 +1,8 @@
+import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';import {spawnSync} from 'node:child_process';
+const root='E:\\CODEX\\Aplicaciones\\JARVIS\\Dependencias\\Workstation',file=path.join(root,'LibreOfficePortable_26.2.4.paf.exe'),target=path.join(root,'LibreOfficePortable'),proof=path.resolve('docs/evidence/device-workflows-20261022/provision');
+const url='https://download.documentfoundation.org/libreoffice/portable/26.2.4/LibreOfficePortable_26.2.4_MultilingualStandard.paf.exe',expected='4bde93374aef4409243505b20d16561a4628ac7591457dd01fc6e1ccf571ba65';
+if(!fs.existsSync(file)){const response=await fetch(url);if(!response.ok)throw Error('RENDERER_DOWNLOAD_'+response.status);const fd=fs.openSync(file+'.partial','w');try{for await(const chunk of response.body)fs.writeSync(fd,chunk);}finally{fs.closeSync(fd);}fs.renameSync(file+'.partial',file);}
+const hash=createHash('sha256').update(fs.readFileSync(file)).digest('hex');if(hash!==expected)throw Error('RENDERER_HASH_MISMATCH');
+const r=spawnSync(file,['/S','/D='+target],{windowsHide:true,encoding:'utf8',timeout:180000,env:{...process.env,TEMP:path.join(root,'temp'),TMP:path.join(root,'temp')}});
+const exe=path.join(target,'App','libreoffice','program','soffice.exe');const receipt={url,file,sha256:hash,target,status:r.status,error:r.error?String(r.error):null,stdout:r.stdout,stderr:r.stderr,exists:fs.existsSync(exe),exe,scope:'New portable renderer on external disk; no existing desktop LibreOffice used'};
+fs.writeFileSync(path.join(proof,'word-renderer.json'),JSON.stringify(receipt,null,2));if(r.status!==0||!receipt.exists)throw Error('RENDERER_PROVISION_FAILED');console.log('PORTABLE_WORD_RENDERER_READY '+exe);

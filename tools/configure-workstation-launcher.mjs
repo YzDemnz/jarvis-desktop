@@ -1,0 +1,7 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
+const file=path.resolve('../Abrir-JARVIS.ps1'),backup='E:/CODEX/Historial/DeviceWorkflows-JARVIS-20261022/Abrir-JARVIS-antes-de-workstation.ps1',proof=path.resolve('docs/evidence/device-workflows-20261022/launcher.json');
+assert.match(file,/^E:\\CODEX\\Aplicaciones\\JARVIS\\Abrir-JARVIS\.ps1$/i);
+const original=fs.readFileSync(file,'utf8'),needle='Start-Process -FilePath $jarvisExecutable -WorkingDirectory',replacement="Start-Process -FilePath $jarvisExecutable -ArgumentList @('--disable-gpu') -WorkingDirectory";
+assert.ok(original.includes(needle),'EXPECTED_OWNER_LAUNCHER');assert.equal(fs.existsSync(backup),false,'PRESERVE_LAUNCHER_BACKUP');
+fs.copyFileSync(file,backup,fs.constants.COPYFILE_EXCL);const updated=original.replace(needle,replacement);fs.writeFileSync(file+'.workstation-new',updated,{flag:'wx'});fs.renameSync(file+'.workstation-new',file);
+const hash=text=>createHash('sha256').update(text).digest('hex');fs.writeFileSync(proof,JSON.stringify({status:'CONFIGURED',file,backup,beforeSha256:hash(original),afterSha256:hash(updated),args:['--disable-gpu'],windowsPolicyChanged:false,reason:'Pass software composition flag before Chromium initialization; renderer sandbox preserved and external Vulkan unchanged',at:new Date().toISOString()},null,2),{flag:'wx'});console.log('SUPPORTED_LAUNCHER_CONFIGURED');

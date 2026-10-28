@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+const pin=JSON.parse(fs.readFileSync('tools/native-helper-artifacts.json','utf8'));
+const digest=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const before=pin.files.map(file=>({target:file.target,sha256:digest(file.target)}));
+const fixture=fs.mkdtempSync(path.join(os.tmpdir(),'jarvis-native-artifact-negative-'));
+assert.ok(fixture.toLowerCase().startsWith('e:\\codex\\'));
+fs.copyFileSync(path.resolve(pin.cache,pin.files[0].name),path.join(fixture,pin.files[0].name));
+fs.writeFileSync(path.join(fixture,pin.files[1].name),'owned wrong artifact; never execute');
+const rejected=spawnSync(process.execPath,['tools/prepare-native-helpers.mjs'],{env:{...process.env,JARVIS_NATIVE_ARTIFACT_ROOT:fixture},encoding:'utf8',windowsHide:true});
+assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/NATIVE_ARTIFACT_HASH_MISMATCH/);
+assert.deepEqual(pin.files.map(file=>({target:file.target,sha256:digest(file.target)})),before,'No output may change when the second input fails');
+const accepted=spawnSync(process.execPath,['tools/prepare-native-helpers.mjs','--check'],{env:{...process.env},encoding:'utf8',windowsHide:true});
+assert.equal(accepted.status,0,accepted.stderr);assert.equal(JSON.parse(accepted.stdout).mode,'CHECK_ONLY');
+const result={status:'PASS',fixture,wrongSecondArtifactRefused:true,noPartialCopy:true,validArtifactsCheck:true,
+  preservedBlockedBuildHashes:before,sourceCommit:pin.sourceCommit,nativeTree:pin.nativeTree,policyChanged:false};
+fs.writeFileSync('docs/evidence/electron44-20261011/native-artifact-staging-20261021.json',JSON.stringify(result,null,2));
+console.log('NATIVE_ARTIFACT_STAGING_PASS wrong-second-hash refused before copies; verified source/cache accepted');

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "kind": "VERIFIED_UNCHANGED_NATIVE_SOURCE",
+  "sourceCommit": "a701eed9eb8110dd1537107afae9180e13855c38",
+  "nativeTree": "0402760e5df1b0cb183b823967c4d98839ee6353",
+  "cache": "../Dependencias/NativeArtifacts/verified-0.4.1",
+  "files": [
+    {"name": "jarvis-process-host.exe", "sha256": "62441824ca83e6eb204c99f3d8435a1fce7706768eedf33dc0157c7aa27b1d36", "target": "native/process-host/bin/Release/net8.0-windows/win-x64/publish/jarvis-process-host.exe"},
+    {"name": "jarvis-automation-helper.exe", "sha256": "b607fc49a23e6a4379bd82f591067f3dc7c26f20fdc67cb08c49a04b71528552", "target": "native/windows-helper/bin/Release/net8.0-windows/win-x64/publish/jarvis-automation-helper.exe"}
+  ]
+}

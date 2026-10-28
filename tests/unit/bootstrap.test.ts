@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { BootstrapController, TRUSTED_MODELS, TRUSTED_RUNTIME } from '../../electron/bootstrap/BootstrapController';
+import { ArtifactInstaller, contained } from '../../electron/bootstrap/ArtifactInstaller';
+import { adviseLocal } from '../../electron/bootstrap/LocalAdvisor';
+import type { BootstrapSnapshot, Probe, BootstrapJournal } from '../../electron/bootstrap/contracts';
+import type { BootstrapRuntime } from '../../electron/bootstrap/LocalRuntime';
+import { fixture } from '../../src/machine/fixtures/machines';
+
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'jarvis-bootstrap-unit-'));const hardware={...fixture('D'),source:'windows' as const,os:{...fixture('D').os,platform:'win32',architecture:'x64'},cpu:{...fixture('D').cpu,physicalCores:6},memory:{totalBytes:32*1024**3,availableBytes:20*1024**3,usedBytes:12*1024**3}};
+let state:BootstrapSnapshot|null=null, effects=0, operations=0, starts=0,stops=0;const journal:BootstrapJournal={read:()=>state,write:s=>state=structuredClone(s),operation:()=>operations++,effect:()=>effects++,benchmark:()=>{}};
+const probe:Probe={correct:true,stable:true,latencyMs:250,startMs:100,firstTokenMs:40,tokensPerSecond:12,outputTokens:10,ramBytes:null,vramBytes:null,contextTested:30,at:Date.now(),rating:'USABLE',error:null};
+let broken=false,block=false;class FakeInstaller extends ArtifactInstaller {async obtain(a:any,signal:AbortSignal):Promise<string>{if(block)await new Promise<void>((_resolve,reject)=>signal.addEventListener('abort',()=>reject(Error('STOPPED')),{once:true}));signal.throwIfAborted();if(broken)throw Error('ARTIFACT_INTEGRITY_MISMATCH');return path.join(root,a.filename);}async runtime(){return root;}}
+const runtime:BootstrapRuntime={start:async()=>{starts++;return 100;},probe:async()=>probe,generate:async()=>'{"ok":true}',stop:async()=>{stops++;},alive:()=>false};
+const make=()=>new BootstrapController(journal,new FakeInstaller(root),runtime,async()=>hardware);
+let forwardedContext:string|undefined;const originalGenerate=runtime.generate;runtime.generate=async(prompt,signal,context)=>{forwardedContext=context;return originalGenerate(prompt,signal);};
+let c=make();assert.equal(c.snapshot().localHealth,'NOT_INSTALLED');await c.plan();assert.equal(c.snapshot().plan?.candidateId,'qwen3-4b-gguf');
+const plan=c.snapshot().plan;c.externalObserved('codex-app-server');assert.deepEqual(c.snapshot().plan,plan);assert.equal(c.snapshot().intelligenceRole,'BOOTSTRAP_INTELLIGENCE');assert.throws(()=>c.externalObserved('https://evil.example/install.exe'));
+c.decline();assert.equal(c.snapshot().phase,'EXTERNAL_ONLY');assert.equal(starts,0);
+await c.install();assert.equal(c.snapshot().phase,'OPERATIVE');assert.equal(c.snapshot().intelligenceRole,'SPECIALIST');assert.equal(c.snapshot().externalProviderId,'codex-app-server');assert.equal(c.snapshot().routing.general,'bootstrap-local');assert.equal(effects,4);
+const beforeEffects=effects;await c.install();assert.equal(effects,beforeEffects);assert.equal(starts,2);assert.equal(operations,4);assert.ok(stops>=2);
+runtime.alive=()=>true;await c.answer('Continue this task',new AbortController().signal,'Verified public context owned by JARVIS');assert.equal(forwardedContext,'Verified public context owned by JARVIS');runtime.alive=()=>false;
+c.externalDisconnected('codex-app-server');assert.equal(c.snapshot().routing.general,'bootstrap-local');assert.equal(c.snapshot().routing.coding,null);assert.equal(c.snapshot().intelligenceRole,null);
+c=make();assert.equal(c.snapshot().receipts.length,4);assert.equal(starts,2);assert.equal(c.snapshot().phase,'OPERATIVE');
+broken=true;await c.install();assert.equal(c.snapshot().phase,'FAILED');assert.equal(c.snapshot().failure,'ARTIFACT_INTEGRITY_MISMATCH');assert.equal(starts,2);broken=false;block=true;const work=c.install();await new Promise(r=>setTimeout(r,10));await c.cancel();await work;assert.equal(c.snapshot().phase,'CANCELLED');assert.equal(starts,2);block=false;
+state={...c.snapshot(),phase:'DOWNLOADING_MODEL'};c=make();assert.equal(c.snapshot().phase,'INTERRUPTED');assert.equal(starts,2);
+assert.equal(adviseLocal({...hardware,os:{...hardware.os,architecture:'arm64'}},TRUSTED_MODELS,TRUSTED_RUNTIME,root,50*1024**3),null);
+assert.equal(adviseLocal(hardware,TRUSTED_MODELS,TRUSTED_RUNTIME,root,100),null);
+assert.equal(adviseLocal({...hardware,memory:{totalBytes:4*1024**3,availableBytes:3*1024**3,usedBytes:1024**3}},TRUSTED_MODELS,TRUSTED_RUNTIME,root,50*1024**3),null);
+assert.throws(()=>contained(root,'../outside'));assert.throws(()=>contained(root,path.resolve(root,'outside')));
+const low=adviseLocal({...hardware,cpu:{...hardware.cpu,physicalCores:2},memory:{totalBytes:8*1024**3,availableBytes:6*1024**3,usedBytes:2*1024**3}},TRUSTED_MODELS,TRUSTED_RUNTIME,root,50*1024**3);assert.equal(low?.candidateId,'qwen3-0.6b-gguf');
+const relocated=path.join(root,'relocated');fs.mkdirSync(relocated);c.relocate(new ArtifactInstaller(relocated));assert.equal(c.snapshot().installRoot,relocated);assert.equal(c.snapshot().candidateId,null);assert.equal(c.snapshot().routing.general,null);
+c.discoveredExisting(true,false);assert.equal(c.snapshot().localHealth,'RUNTIME_ONLY');c.discoveredExisting(true,true);assert.equal(c.snapshot().localHealth,'NOT_VERIFIED');assert.equal(starts,2);
+const data=Buffer.from('abcdefghij'),hash=createHash('sha256').update(data).digest('hex'),a={url:'https://huggingface.co/Qwen/test/resolve/pinned/test.gguf',size:10,sha256:hash,filename:'test.gguf'},cache=path.join(root,'cache');fs.mkdirSync(cache,{recursive:true});fs.writeFileSync(path.join(cache,hash+'-test.gguf.partial'),data.subarray(0,5));const saved=globalThis.fetch;let ranges:string[]=[];
+globalThis.fetch=async(_url,init)=>{ranges.push(String((init?.headers as Record<string,string>)?.Range));return new Response(data.subarray(5),{status:206,headers:{'content-range':'bytes 5-9/10'}});};
+try{const installer=new ArtifactInstaller(root);const final=await installer.obtain(a,new AbortController().signal,()=>{});assert.deepEqual(fs.readFileSync(final),data);assert.deepEqual(ranges,['bytes=5-']);await installer.obtain(a,new AbortController().signal,()=>{});assert.equal(ranges.length,1);
+  await assert.rejects(()=>installer.obtain({...a,url:'http://evil.example/file'},new AbortController().signal,()=>{}),/CATALOG_ARTIFACT_DENIED/);
+}finally{globalThis.fetch=saved;}
+console.log('BOOTSTRAP_UNIT_PASS: controller ownership, advisor tiers, decline/later install, handoff, receipts, restart, integrity, STOP, incompatible architecture, disk full, contained paths, resumed bytes and no duplicate download. External and runtime adapters SIMULATED here.');

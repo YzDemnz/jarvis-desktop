@@ -1,0 +1,203 @@
+{
+  "name": "jarvis-desktop",
+  "private": true,
+  "version": "0.4.5-dev",
+  "description": "JARVIS — personal AI workstation for Windows",
+  "author": "JARVIS",
+  "main": "dist-electron/main.js",
+  "type": "module",
+  "scripts": {
+    "test:electron44": "node tests/windows/electron44-assurance.test.mjs",
+    "test:coding-benchmark": "node tests/windows/coding-benchmark.test.mjs",
+    "test:coding-fixtures": "node tools/coding-benchmark-fixtures.mjs --validate",
+    "test:proposal-context": "node tools/test-adv-unit.mjs tests/unit/bootstrap-inference-metrics.test.ts tests/unit/proposal-context.test.ts tests/unit/proposal-context-source.test.ts tests/electron-double/proposal-context-conflict.test.ts",
+    "test:project-checks": "node tools/test-adv-unit.mjs tests/unit/project-check-evidence.test.ts",
+    "test:windows-workflow": "node tests/windows/verified-coding-workflow.test.mjs",
+    "test:adv": "node tools/test-adv-unit.mjs tests/unit/adv-verification.test.ts tests/unit/advancement-memory-code.test.ts tests/unit/advancement-code-integration.test.ts tests/unit/adv-providers.test.ts tests/unit/adv-routing-service.test.ts tests/unit/adv-concilius.test.ts",
+    "test:windows-adv": "node tests/windows/advancement-runtime.test.mjs",
+    "test:windows-s41": "node tests/windows/s41-cross-surface-runtime.test.mjs",
+    "test:s41": "node tools/test-s41-unit.mjs",
+    "test:s4": "node tools/test-s4-unit.mjs",
+    "test:windows-s4": "node tests/windows/s4-continuity-runtime.test.mjs",
+    "test:s3": "tsx --tsconfig tests/tsconfig.json tests/unit/s3-connected.test.ts",
+    "test:windows-s3": "node tests/windows/s3-connected-runtime.test.mjs",
+    "test:windows-ownership": "tsx --tsconfig tests/tsconfig.json tests/windows/ownership.test.ts",
+    "test:windows-s2-boundaries": "tsx --tsconfig tests/tsconfig.json tests/windows/boundary-probes.test.ts",
+    "test:s2": "tsx --tsconfig tests/tsconfig.json tests/unit/s2-authority.test.ts",
+    "test:windows-s2": "node tests/windows/s2-authority-runtime.test.mjs",
+    "test:north-star": "node tools/test-north-star.mjs",
+    "test:windows-continuity": "node tests/windows/continuity-runtime.test.mjs",
+    "test:execution-fabric": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/execution-fabric.test.ts",
+    "test:ef2a:assurance": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-assurance.test.ts",
+    "test:ef2a:router": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-router.test.ts",
+    "test:ef2a:project-trust": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-project-trust.test.ts",
+    "test:ef2a:brokered-propose": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-brokered-propose.test.ts",
+    "test:ef2a:scratch": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-scratch.test.ts",
+    "test:ef2a:real-verify": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-real-verify.test.ts",
+    "test:ef2a:failure-taxonomy": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-failure-taxonomy.test.ts",
+    "test:ef2a:reclassification": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-reclassification.test.ts",
+    "test:ef2a:budget": "tsx --tsconfig tests/tsconfig.json tests/execution-fabric/ef2a-budget.test.ts",
+    "lab:ef1:web": "node tests/execution-fabric/webcontainer-poc.mjs",
+    "test:capsule": "tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/capsule.test.ts",
+    "test:capsule-sandbox-probe": "tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/windows-sandbox-probe.ts",
+    "test:a6-native": "tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/native-a6.ts",
+    "test:secure-bridge": "tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/secure-bridge.test.ts",
+    "test:convergence": "tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/contracts.test.ts && tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/orphans.test.ts && tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/opencode-flow.test.ts",
+    "lab:convergence:lifecycle": "tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/real-lifecycle.ts",
+    "lab:convergence:benchmark": "tsx --tsconfig tests/tsconfig.json tests/intelligence-lab/benchmark.ts",
+    "dev": "vite",
+    "build:helper": "node tools/prepare-native-helpers.mjs",
+    "build:helper:source": "dotnet publish native/windows-helper/JarvisAutomationHelper.csproj -c Release && dotnet publish native/process-host/JarvisProcessHost.csproj -c Release",
+    "build:native": "node tools/rebuild-native.mjs",
+    "build": "npm run build:helper && tsc --noEmit && npm run build:native && npm run build:bridge && npm run build:workbench && vite build && electron-builder",
+    "build:dir": "npm run build:helper && tsc --noEmit && npm run build:native && npm run build:bridge && npm run build:workbench && vite build && electron-builder --dir",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "test": "npm run test:all-portable && npm run test:renderer",
+    "test:logic": "tsx --tsconfig tests/tsconfig.json tests/unit/logic.test.ts",
+    "test:machine": "tsx --tsconfig tests/tsconfig.json tests/unit/machine.test.ts",
+    "test:desktop": "tsx --tsconfig tests/tsconfig.json tests/unit/desktop.test.ts",
+    "test:browser": "tsx --tsconfig tests/tsconfig.json tests/electron-double/browser.test.ts",
+    "test:agent": "tsx --tsconfig tests/tsconfig.json tests/electron-double/agent.test.ts",
+    "test:helper": "tsx --tsconfig tests/tsconfig.json tests/electron-double/helper-bridge.test.ts",
+    "test:windows-helper": "tsx --tsconfig tests/tsconfig.json tests/windows/native-helper.test.ts",
+    "test:windows-input": "tsx --tsconfig tests/tsconfig.json tests/windows/input-stop.test.ts",
+    "test:windows-window": "tsx --tsconfig tests/tsconfig.json tests/windows/native-window.test.ts",
+    "test:windows-native-serial": "npm run test:windows-helper && npm run test:windows-input && npm run test:windows-window",
+    "test:ef2a:dll-parallel": "node tests/windows/dll-fixture-parallel.test.mjs",
+    "test:ef2a:sqlite-abi": "node tests/execution-fabric/ef2a-sqlite-abi.test.mjs",
+    "test:windows-electron": "node tests/windows/electron-runtime.test.mjs",
+    "test:windows-dev": "node tests/windows/developer-runtime.test.mjs",
+    "test:windows-fabric": "node tests/windows/fabric-runtime.test.mjs",
+    "test:renderer": "node tests/renderer-integration/renderer.test.mjs",
+    "test:dev": "tsx --tsconfig tests/tsconfig.json tests/unit/dev.test.ts",
+    "test:dev-fs": "tsx --tsconfig tests/tsconfig.json tests/electron-double/dev-fs.test.ts",
+    "test:dev-index": "tsx --tsconfig tests/tsconfig.json tests/electron-double/dev-index.test.ts",
+    "test:dev-process": "tsx --tsconfig tests/tsconfig.json tests/electron-double/dev-process.test.ts",
+    "test:dev-agent": "tsx --tsconfig tests/tsconfig.json tests/electron-double/dev-agent.test.ts",
+    "test:fabric": "tsx --tsconfig tests/tsconfig.json tests/unit/fabric.test.ts",
+    "test:all-portable": "npm run test:logic && npm run test:machine && npm run test:desktop && npm run test:dev && npm run test:browser && npm run test:agent && npm run test:helper && npm run test:dev-fs && npm run test:dev-index && npm run test:dev-process && npm run test:dev-agent && npm run test:fabric",
+    "test:portable-electron": "node tools/test-portable-electron.mjs",
+    "test:bootstrap": "node tools/test-adv-unit.mjs tests/unit/bootstrap.test.ts tests/unit/bootstrap-providers.test.ts",
+    "test:windows-bootstrap": "node tests/windows/bootstrap-runtime.test.mjs",
+    "build:workbench": "node tools/build-workbench.mjs",
+    "test:workbench": "node tools/test-adv-unit.mjs tests/unit/workstation.test.ts tests/unit/document-model-memory.test.ts",
+    "test:windows-workbench": "node tests/windows/workstation-runtime.test.mjs",
+    "build:bridge": "node tools/build-bridge.mjs",
+    "test:intelligence": "npm run build:bridge && node tools/test-adv-unit.mjs tests/unit/intelligence-bridge.test.ts tests/unit/work-organization.test.ts tests/unit/adv-concilius.test.ts",
+    "test:windows-intelligence": "node tests/windows/intelligence-bridge-runtime.test.mjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.3",
+    "framer-motion": "^11.11.0",
+    "lucide-react": "^0.454.0",
+    "monaco-editor": "^0.52.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.3",
+    "ws": "8.22.0",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@agentclientprotocol/claude-agent-acp": "0.81.2",
+    "@agentclientprotocol/codex-acp": "1.13.1",
+    "@agentclientprotocol/sdk": "1.5.0",
+    "@electron/rebuild": "4.2.1",
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "@opencode-ai/sdk": "1.18.32",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/ws": "8.18.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "docx": "9.13.0",
+    "electron": "44.9.3",
+    "electron-builder": "26.15.3",
+    "esbuild": "^0.28.2",
+    "fast-xml-parser": "5.11.2",
+    "fflate": "0.8.3",
+    "opencode-ai": "1.18.32",
+    "pdfjs-dist": "6.4.299",
+    "playwright": "^1.56.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "tsx": "^4.19.2",
+    "vite": "5.4.21",
+    "vite-plugin-electron": "^0.28.8",
+    "vite-plugin-electron-renderer": "^0.14.6"
+  },
+  "overrides": {
+    "@openai/codex": "0.156.1",
+    "@anthropic-ai/claude-agent-sdk": "0.3.280",
+    "@agentclientprotocol/sdk": "1.5.0"
+  },
+  "build": {
+    "appId": "com.jarvis.desktop",
+    "productName": "JARVIS",
+    "electronDist": "node_modules/electron/dist",
+    "npmRebuild": false,
+    "nodeGypRebuild": false,
+    "disableAsarIntegrity": true,
+    "afterPack": "./tools/check-portable-electron.mjs",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist",
+      "dist-electron",
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/bindings/**/*",
+      "node_modules/file-uri-to-path/**/*",
+      "node_modules/typescript/**/*",
+      "node_modules/ws/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/build/Release/*.node",
+      "node_modules/better-sqlite3/prebuilds/*.node"
+    ],
+    "extraResources": [
+      {
+        "from": "dist-workbench",
+        "to": "workbench",
+        "filter": [
+          "*.mjs",
+          "*.py"
+        ]
+      },
+      {
+        "from": "native/process-host/bin/Release/net8.0-windows/win-x64/publish",
+        "to": "native",
+        "filter": [
+          "jarvis-process-host.exe"
+        ]
+      },
+      {
+        "from": "native/windows-helper/bin/Release/net8.0-windows/win-x64/publish",
+        "to": "native",
+        "filter": [
+          "jarvis-automation-helper.exe"
+        ]
+      },
+      {
+        "from": "dist-bridge",
+        "to": "bridge",
+        "filter": [
+          "jarvis-mcp.cjs"
+        ]
+      }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "${productName}-${version}-setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

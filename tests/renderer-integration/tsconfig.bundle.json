@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@/*": ["../../src/*"],
+      "zustand": ["./shims/zustand.ts"],
+      "zustand/middleware": ["./shims/zustand-middleware.ts"],
+      "framer-motion": ["./shims/framer-motion.tsx"],
+      "lucide-react": ["./shims/lucide-react.tsx"]
+    }
+  }
+}

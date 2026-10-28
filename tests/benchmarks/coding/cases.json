@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "kind": "CURATED_MULTI_FILE_BENCHMARK",
+  "criteriaAuthor": "Codex benchmark author, frozen before the tested model runs",
+  "scope": "Owned, deliberately bounded application-domain fixtures; not production repository fixes or a general autonomous programming capability claim.",
+  "cases": [
+    {
+      "id": "dependency-contract",
+      "name": "bench-dependency-contract",
+      "problem": "A cart service fails after a shared identifier utility API changed. The catalog and direct utility consumers must keep their existing behavior.",
+      "goal": "Encuentra por qué fallan las pruebas del proyecto bench-dependency-contract y corrige la integración entre carrito, catálogo y utilidad de identificadores. Conserva los contratos públicos y evita regresiones; sin cambiar dependencias ni pruebas.",
+      "sourcePaths": ["src/cart.cjs", "src/catalog.cjs", "src/ids.cjs"],
+      "dimensions": ["internal-dependency-contract", "module-import", "regression-preservation"],
+      "expectedMinimumAssertions": 22,
+      "regressionMutation": {"path": "src/ids.cjs", "oldText": ".trim().toLowerCase()", "newText": ".trim().toUpperCase()"}
+    },
+    {
+      "id": "invoice-domain",
+      "name": "bench-invoice-domain",
+      "problem": "Invoice integration mixes major and minor money units and incorrectly applies tax. Existing standalone money conversions must remain correct.",
+      "goal": "Encuentra y corrige los errores de las pruebas del proyecto bench-invoice-domain. Revisa el cálculo monetario entre líneas e invoice, incluidos céntimos, impuestos, cantidades y casos vacíos. Evita regresiones; sin cambiar dependencias ni pruebas.",
+      "sourcePaths": ["src/invoice.cjs", "src/line.cjs", "src/money.cjs"],
+      "dimensions": ["domain-regression", "cross-module-units", "multiple-source-repairs"],
+      "expectedMinimumAssertions": 14,
+      "regressionMutation": {"path": "src/money.cjs", "oldText": "return amount / 100", "newText": "return amount / 10"}
+    },
+    {
+      "id": "quote-refactor",
+      "name": "bench-quote-refactor",
+      "problem": "A shipping policy was migrated to structured results; quote and checkout consumers still assume the old scalar contracts.",
+      "goal": "Repara el proyecto bench-quote-refactor después de una migración del contrato de cotización: actualiza coherentemente los consumidores de shipping policy y checkout. Mantén las reglas de envío y evita regresiones; sin cambiar dependencias ni pruebas.",
+      "sourcePaths": ["src/checkout.cjs", "src/estimate.cjs", "src/shipping-policy.cjs"],
+      "dimensions": ["coherent-contract-refactor", "multiple-source-repairs", "boundary-behavior"],
+      "expectedMinimumAssertions": 17,
+      "regressionMutation": {"path": "src/shipping-policy.cjs", "oldText": "subtotalMinor >= 5000", "newText": "subtotalMinor > 5000"}
+    }
+  ]
+}
